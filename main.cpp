@@ -1,6 +1,12 @@
+#include "MidiFile\MidiFile.h"
 #include <iostream>
-#include "src/MidiFile.h"
-int main()
-{
-	MidiFile midiFile("example.mid");
+#include <iomanip>
+
+using namespace std;
+using namespace smf;
+
+int main() {
+  
+
+    return 0;
 }
