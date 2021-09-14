@@ -114,13 +114,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\maxti\source\repos\Midi-visualizer\include;C:\Users\maxti\source\repos\Midi-visualizer\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\maxti\source\repos\Midi-visualizer\src;C:\Users\maxti\source\repos\Midi-visualizer\libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\maxti\source\repos\Midi-visualizer\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -281,11 +283,14 @@
     <ClCompile Include="libs\include\glm\detail\glm.cpp" />
     <ClCompile Include="libs\others\stb_image.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\GLFW\GLFW.cpp" />
     <ClCompile Include="src\MidiParser\Binasc.cpp" />
     <ClCompile Include="src\MidiParser\MidiEvent.cpp" />
     <ClCompile Include="src\MidiParser\MidiEventList.cpp" />
     <ClCompile Include="src\MidiParser\MidiFile.cpp" />
     <ClCompile Include="src\MidiParser\MidiMessage.cpp" />
+    <ClCompile Include="src\Visualization\ColorMidi.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\include\GLFW\glfw3.h" />
@@ -545,6 +550,9 @@
     <ClInclude Include="libs\include\MidiFile\MidiMessage.h" />
     <ClInclude Include="libs\include\MidiFile\Options.h" />
     <ClInclude Include="libs\others\stb_image.h" />
+    <ClInclude Include="src\GLFW\GLFW.h" />
+    <ClInclude Include="src\Visualization\ColorMidi.h" />
+    <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

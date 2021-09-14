@@ -1,12 +1,7 @@
-#include "MidiFile\MidiFile.h"
-#include <iostream>
-#include <iomanip>
-
-using namespace std;
-using namespace smf;
+#include "Window/Window.h"
+#include "Visualization/ColorMidi.h"
 
 int main() {
-  
-
+    Window mWindow("Midi Visualizer", 1280, 720);
     return 0;
 }
