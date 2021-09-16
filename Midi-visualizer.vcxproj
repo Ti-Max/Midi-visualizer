@@ -278,6 +278,8 @@
     <None Include="libs\include\glm\gtx\vector_query.inl" />
     <None Include="libs\include\glm\gtx\wrap.inl" />
     <None Include="README.md" />
+    <None Include="res\shaders\quadShader.fs" />
+    <None Include="res\shaders\quadShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\include\glm\detail\glm.cpp" />
@@ -289,6 +291,9 @@
     <ClCompile Include="src\MidiParser\MidiEventList.cpp" />
     <ClCompile Include="src\MidiParser\MidiFile.cpp" />
     <ClCompile Include="src\MidiParser\MidiMessage.cpp" />
+    <ClCompile Include="src\Shader\Shader.cpp" />
+    <ClCompile Include="src\VAO\Meshes.cpp" />
+    <ClCompile Include="src\VAO\VAO.cpp" />
     <ClCompile Include="src\Visualization\ColorMidi.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
@@ -551,6 +556,10 @@
     <ClInclude Include="libs\include\MidiFile\Options.h" />
     <ClInclude Include="libs\others\stb_image.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
+    <ClInclude Include="src\Shader\Shader.h" />
+    <ClInclude Include="src\VAO\Meshes.h" />
+    <ClInclude Include="src\VAO\VAO.h" />
+    <ClInclude Include="src\VAO\Vertex.h" />
     <ClInclude Include="src\Visualization\ColorMidi.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
