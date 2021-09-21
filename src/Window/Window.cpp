@@ -50,11 +50,13 @@ void Window::createWindow(const std::string& title, int width, int height)
 
 void Window::loop()
 {
+	std::srand(time(0));
 	
-	MidiFile midifile("res/example.mid");
+	MidiFile midifile("res/ThemeA.mid");
 
 	midifile.doTimeAnalysis();
 	midifile.linkNotePairs();
+	midifile.makeDeltaTicks();
 
 	Meshes quadMesh;
 	quadMesh.load();
@@ -65,24 +67,44 @@ void Window::loop()
 	shader.use();
 	shader.setVec3("color", glm::vec3(0, 1, 0));
 
+	int tracksCount = midifile.getTrackCount();
+	MidiEventList* track_1 = &(midifile[4]);
 
-
+	bool drawQuad = 0;
+	int nEvent = 0;
 	int start = clock();
+	
 	while (!glfwWindowShouldClose(window))
 	{
-		//glClearColor(0.1f, 0.5f, 1.0f, 1.0f);
+		glClearColor(0.1f, 0.5f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
-
-		int now = clock();
-		if ((now-start) > 1000)
+		for (nEvent; nEvent < track_1->getEventCount(); nEvent++)
 		{
-			std::cout << "1000 \n";
-			start = now;
+			if (track_1->getEvent(nEvent).isNoteOn())
+			{
+				int now = clock()-start;
+				if (track_1->getEvent(nEvent).seconds * 1000 < now) // If it is for this note
+				{
+					if ((track_1->getEvent(nEvent).tick > 0))
+					{
+					std::cout <<"in loop: "<<now <<"\t sec: " << track_1->getEvent(nEvent).seconds << std::endl;
+					shader.use();
+					shader.setVec3("color", glm::vec3((float)(rand()%100) /100, (float)(rand() % 100) / 100, (float)(rand() % 100) / 100));
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
 		}
-		shader.use();
+		if (true)
+		{
+			shader.use();
+			test->draw();
+		}
 
-		test->draw();
 
 		glfwSwapBuffers(window);
 
