@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\maxti\source\repos\Midi-visualizer\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sndfile.lib;openal32.lib;opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -285,6 +285,8 @@
     <ClCompile Include="libs\include\glm\detail\glm.cpp" />
     <ClCompile Include="libs\others\stb_image.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Audio\SoundDevice.cpp" />
+    <ClCompile Include="src\Audio\testingAudio.cpp" />
     <ClCompile Include="src\GLFW\GLFW.cpp" />
     <ClCompile Include="src\MidiParser\Binasc.cpp" />
     <ClCompile Include="src\MidiParser\MidiEvent.cpp" />
@@ -555,6 +557,8 @@
     <ClInclude Include="libs\include\MidiFile\MidiMessage.h" />
     <ClInclude Include="libs\include\MidiFile\Options.h" />
     <ClInclude Include="libs\others\stb_image.h" />
+    <ClInclude Include="src\Audio\SoundDevice.h" />
+    <ClInclude Include="src\Audio\testingAudio.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\VAO\Meshes.h" />
