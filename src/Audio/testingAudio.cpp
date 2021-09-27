@@ -3,24 +3,10 @@
 
 testingAudio::testingAudio()
 {
+	music.load("res/LudumDare1.wav");
 
-	p_ALCDevice = alcOpenDevice("wasda"); // nullptr = get default device
-	if (!p_ALCDevice)
-		std::cerr <<"failed to get sound device \n";
 
-	p_ALCContext = alcCreateContext(p_ALCDevice, nullptr);  // create context
-	if (!p_ALCContext)
-		std::cout << "Failed to set sound context\n";
-
-	if (!alcMakeContextCurrent(p_ALCContext))   // make context current
-		std::cout << "failed to make context current \n";
-
-	const ALCchar* name = nullptr;
-	if (alcIsExtensionPresent(p_ALCDevice, "ALC_ENUMERATE_ALL_EXT"))
-		name = alcGetString(p_ALCDevice, ALC_ALL_DEVICES_SPECIFIER);
-	if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
-		name = alcGetString(p_ALCDevice, ALC_DEVICE_SPECIFIER);
-	printf("Opened \"%s\"\n", name);
+	music.Play();
 
 	///* Open the audio file and check that it's usable. */
 	//sndfile = sf_open(filename, SFM_READ, &sfinfo);

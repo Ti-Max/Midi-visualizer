@@ -285,7 +285,11 @@
     <ClCompile Include="libs\include\glm\detail\glm.cpp" />
     <ClCompile Include="libs\others\stb_image.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Audio\SoundDevice.cpp" />
+    <ClCompile Include="src\Audio\Audio.cpp" />
+    <ClCompile Include="src\Audio\MusicSource.cpp" />
+    <ClCompile Include="src\Audio\SoundBuffer.cpp" />
+    <ClCompile Include="src\Audio\SoundContext.cpp" />
+    <ClCompile Include="src\Audio\SoundSource.cpp" />
     <ClCompile Include="src\Audio\testingAudio.cpp" />
     <ClCompile Include="src\GLFW\GLFW.cpp" />
     <ClCompile Include="src\MidiParser\Binasc.cpp" />
@@ -557,7 +561,11 @@
     <ClInclude Include="libs\include\MidiFile\MidiMessage.h" />
     <ClInclude Include="libs\include\MidiFile\Options.h" />
     <ClInclude Include="libs\others\stb_image.h" />
-    <ClInclude Include="src\Audio\SoundDevice.h" />
+    <ClInclude Include="src\Audio\Audio.h" />
+    <ClInclude Include="src\Audio\MusicSource.h" />
+    <ClInclude Include="src\Audio\SoundBuffer.h" />
+    <ClInclude Include="src\Audio\SoundContext.h" />
+    <ClInclude Include="src\Audio\SoundSource.h" />
     <ClInclude Include="src\Audio\testingAudio.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
     <ClInclude Include="src\Shader\Shader.h" />

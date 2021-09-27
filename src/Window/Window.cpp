@@ -4,7 +4,7 @@
 #include "Shader/Shader.h"
 #include <ctime>
 #include "MidiFile/Midifile.h"
-#include "Audio/testingAudio.h"
+#include "Audio/Audio.h"
 using namespace smf;
 
 Window::Window(const std::string& title, int width, int height)
@@ -51,8 +51,13 @@ void Window::createWindow(const std::string& title, int width, int height)
 
 void Window::loop()
 {
-	testingAudio audio;
+	Audio audio;
+
+	audio.SoundBuffers.emplace("song", new SoundBuffer("res/LudumDare1.wav"));
+	audio.SoundSources.emplace("player", new SoundSource);
 	
+
+	audio.SoundSources["player"]->Play(audio.SoundBuffers["song"]);
 	std::srand(time(0));
 	
 	MidiFile midifile("res/ThemeA.mid");
