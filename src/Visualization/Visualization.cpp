@@ -22,12 +22,12 @@ void Visualization::Start(smf::MidiEventList* track)
 
 void Visualization::Draw()
 {
-	track->last();
 	if (startTime == 0) 
 	{
 		std::cout << "Call function Start() before calling Draw!!\n";
 		return;
 	}
+
 	//Now we are checking if we got any new notes
 	if (NewNote() != nullptr)
 	{
@@ -45,7 +45,8 @@ smf::MidiEvent* Visualization::NewNote()
 	//goes through the array of midi events stating from last event
 	for (nEvent; nEvent < track->getEventCount(); nEvent++)
 	{
-		smf::MidiEvent* currentEvent = &(track->getEvent(nEvent));
+		std::cout << "here\n";
+		//smf::MidiEvent* currentEvent = &(track->getEvent(nEvent));
 		//is it "note on" event?
 		if (track->getEvent(nEvent).isNoteOn())
 		{
@@ -58,19 +59,20 @@ smf::MidiEvent* Visualization::NewNote()
 				{
 
 					lastTick = track->getEvent(nEvent).tick;
-					std::cout << "in loop: " << now << "\t sec: " << track->getEvent(nEvent).tick << std::endl;
+					std::cout << "in loop: " << now << "\t sec: " << track->getEvent(nEvent).seconds << std::endl;
+					if (firstNote)
+						firstNote = false;
 					return &(track->getEvent(nEvent));
 				}
-				if (firstNote)
-					firstNote = false;
 			}
 			else
 			{
 				//we should wait, maybe next frame...
-				return nullptr;
+				break;
 			}
 		}
+
 	}
-	std::cout << "Track is finished\n";
+	//std::cout << "Track is finished\n";
 	return nullptr;
 }

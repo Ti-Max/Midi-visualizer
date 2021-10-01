@@ -77,6 +77,7 @@ void Window::loop()
 
 	Visualization render;
 	
+
 	render.Start(track_1);
 	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
