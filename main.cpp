@@ -1,5 +1,4 @@
 #include "Window/Window.h"
-#include "Visualization/ColorMidi.h"
 int main() {
 
 

@@ -1,10 +1,13 @@
+//TODO: streaming files, in stead of uning one buffer. Because of the memory
+
 #include "Window.h"
 #include "VAO/VAO.h"
 #include "VAO/Meshes.h"
 #include "Shader/Shader.h"
-#include <ctime>
+
 #include "MidiFile/Midifile.h"
 #include "Audio/Audio.h"
+#include "Visualization/Visualization.h"
 using namespace smf;
 
 Window::Window(const std::string& title, int width, int height)
@@ -51,68 +54,38 @@ void Window::createWindow(const std::string& title, int width, int height)
 
 void Window::loop()
 {
-	Audio audio;
+	//Audio
+	Audio::init();
+	Audio::addSource(new SoundSource(SourceInfo(0.5f)), "Background");
+	Audio::addBuffer(new SoundBuffer("res/LoseYourself.wav"), "music");
 
-	audio.SoundBuffers.emplace("song", new SoundBuffer("res/LudumDare1.wav"));
-	audio.SoundSources.emplace("player", new SoundSource);
-	
+	Audio::addSource(new SoundSource(SourceInfo()), "click");
+	Audio::addBuffer(new SoundBuffer("res/click.wav"), "click");
 
-	audio.SoundSources["player"]->Play(audio.SoundBuffers["song"]);
+
+
 	std::srand(time(0));
 	
-	MidiFile midifile("res/ThemeA.mid");
+	MidiFile midifile("res/LoseYourself.mid");
 
 	midifile.doTimeAnalysis();
 	midifile.linkNotePairs();
-	midifile.makeDeltaTicks();
-
-	Meshes quadMesh;
-	quadMesh.load();
-	GL::VAO* test = quadMesh["quad"];
-
-	Shader shader("quadShader");
-
-	shader.use();
-	shader.setVec3("color", glm::vec3(0, 1, 0));
+	//midifile.makeDeltaTicks();
 
 	int tracksCount = midifile.getTrackCount();
-	MidiEventList* track_1 = &(midifile[4]);
+	MidiEventList* track_1 = &(midifile[1]);
 
-	bool drawQuad = 0;
-	int nEvent = 0;
-	int start = clock();
+	Visualization render;
 	
+	render.Start(track_1);
+	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.1f, 0.5f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
-		for (nEvent; nEvent < track_1->getEventCount(); nEvent++)
-		{
-			if (track_1->getEvent(nEvent).isNoteOn())
-			{
-				int now = clock()-start;
-				if (track_1->getEvent(nEvent).seconds * 1000 < now) // If it is for this note
-				{
-					if ((track_1->getEvent(nEvent).tick > 0))
-					{
-					std::cout <<"in loop: "<<now <<"\t sec: " << track_1->getEvent(nEvent).seconds << std::endl;
-					shader.use();
-					shader.setVec3("color", glm::vec3((float)(rand()%100) /100, (float)(rand() % 100) / 100, (float)(rand() % 100) / 100));
-					}
-				}
-				else
-				{
-					break;
-				}
-			}
-		}
-		if (true)
-		{
-			shader.use();
-			test->draw();
-		}
 
+		render.Draw();
 
 		glfwSwapBuffers(window);
 
@@ -156,4 +129,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
 		setFullScreenMode(window);
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+	{
+		if (!Audio::isPaused("Background"))
+			Audio::Pause("Background");
+		else
+			Audio::Play("Background");
+	}
 }

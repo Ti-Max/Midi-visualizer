@@ -453,9 +453,6 @@
     <ClCompile Include="src\Window\Window.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Visualization\ColorMidi.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="src\VAO\Meshes.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -463,9 +460,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Shader\Shader.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Audio\testingAudio.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Audio\SoundContext.cpp">
@@ -481,6 +475,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Audio\Audio.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Visualization\Visualization.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1262,9 +1259,6 @@
     <ClInclude Include="src\Window\Window.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\Visualization\ColorMidi.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="src\VAO\Meshes.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -1275,9 +1269,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Shader\Shader.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Audio\testingAudio.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Audio\SoundContext.h">
@@ -1293,6 +1284,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Audio\Audio.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visualization\Visualization.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

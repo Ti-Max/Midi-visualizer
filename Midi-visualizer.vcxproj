@@ -290,7 +290,6 @@
     <ClCompile Include="src\Audio\SoundBuffer.cpp" />
     <ClCompile Include="src\Audio\SoundContext.cpp" />
     <ClCompile Include="src\Audio\SoundSource.cpp" />
-    <ClCompile Include="src\Audio\testingAudio.cpp" />
     <ClCompile Include="src\GLFW\GLFW.cpp" />
     <ClCompile Include="src\MidiParser\Binasc.cpp" />
     <ClCompile Include="src\MidiParser\MidiEvent.cpp" />
@@ -300,7 +299,7 @@
     <ClCompile Include="src\Shader\Shader.cpp" />
     <ClCompile Include="src\VAO\Meshes.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
-    <ClCompile Include="src\Visualization\ColorMidi.cpp" />
+    <ClCompile Include="src\Visualization\Visualization.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -566,13 +565,12 @@
     <ClInclude Include="src\Audio\SoundBuffer.h" />
     <ClInclude Include="src\Audio\SoundContext.h" />
     <ClInclude Include="src\Audio\SoundSource.h" />
-    <ClInclude Include="src\Audio\testingAudio.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\VAO\Meshes.h" />
     <ClInclude Include="src\VAO\VAO.h" />
     <ClInclude Include="src\VAO\Vertex.h" />
-    <ClInclude Include="src\Visualization\ColorMidi.h" />
+    <ClInclude Include="src\Visualization\Visualization.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

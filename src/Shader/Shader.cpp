@@ -13,8 +13,8 @@ Shader::Shader()
 
 void Shader::load(const std::string& name)
 {
-	GLuint vertex = loadShader("res/glsl/" + name + ".vs", GL_VERTEX_SHADER);
-	GLuint fragment = loadShader("res/glsl/" + name + ".fs", GL_FRAGMENT_SHADER);
+	GLuint vertex = loadShader("res/shaders/" + name + ".vs", GL_VERTEX_SHADER);
+	GLuint fragment = loadShader("res/shaders/" + name + ".fs", GL_FRAGMENT_SHADER);
 	link(vertex, fragment);
 }
 

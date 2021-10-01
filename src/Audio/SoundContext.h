@@ -5,11 +5,12 @@
 class SoundContext
 {
 public:
+	SoundContext();
 	//Creates a Context and makes it current 
-	SoundContext(const char* deviceName = nullptr);
+	SoundContext(const char* deviceName);
 	~SoundContext();
-private:
 	void Init(const ALCchar* deviceName);
+private:
 
 	ALCdevice* p_ALCDevice;
 	ALCcontext* p_ALCContext;

@@ -1,21 +1,29 @@
+//TODO: Play(); default devices
+
 #pragma once
 #include "Audio/SoundContext.h"
-#include "Audio/SoundSource.h"
 #include "Audio/SoundBuffer.h"
+#include "Audio/SoundSource.h"
 #include <map>
+
 class Audio
 {
 public:
 	static Audio* get();
-	static void init();
+	//nullptr = default devise;
+	static void init(const char* deviceName = nullptr);
 
-	
-	static SoundBuffer* addBuffer(std::string path, std::string name);
+	//Add buffer to the std::map; use 'name' when you call getBuffer()
+	static SoundBuffer* addBuffer(SoundBuffer* buffer, const std::string& name);
+	// 'name' is identificatior.
+	static SoundSource* addSource(SoundSource* source, const std::string& name);
 
-
-	std::map<std::string, SoundSource*> SoundSources;
-	std::map<std::string, SoundBuffer*> SoundBuffers;
+	static void Play(const std::string& source, const std::string& buffer = "default");
+	static bool isPaused(const std::string& source);
+	static void Pause(const std::string& source);
 private:
+	std::map<std::string, SoundSource*> soundSources;
+	std::map<std::string, SoundBuffer*> soundBuffers;
 	Audio();
 	~Audio();
 	SoundContext context;

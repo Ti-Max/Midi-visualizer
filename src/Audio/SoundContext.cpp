@@ -1,5 +1,11 @@
 #include "SoundContext.h"
 
+
+
+SoundContext::SoundContext()
+{
+}
+
 SoundContext::SoundContext(const char* deviceName)
 {
 	Init(deviceName);
