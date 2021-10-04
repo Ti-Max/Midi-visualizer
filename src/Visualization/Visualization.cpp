@@ -1,15 +1,19 @@
+//Seems like Audio goes faster. FIX IT
 #include "Visualization.h"
 
 #include <ctime>
 #include<iostream>
 #include <random>
 #include <glm/gtc/matrix_transform.hpp>
+
+using namespace glm;
+
 void Visualization::Start(smf::MidiEventList* track)
 {
 	this->track = track;
 
 	quadMesh.load();
-	test = quadMesh["quad"];
+	quad = quadMesh["quad"];
 
 	shader.load("quadShader");
 	shader.use();
@@ -19,6 +23,10 @@ void Visualization::Start(smf::MidiEventList* track)
 
 	startTime = clock();
 
+}
+template<typename T>
+void print(T data) {
+	std::cout << data << "\n";
 }
 
 void Visualization::Draw()
@@ -31,18 +39,29 @@ void Visualization::Draw()
 
 	//Now we are checking if we got any new notes
 	smf::MidiEvent* note = NewNote();
-	if (note != nullptr)
+	while (note != nullptr)
 	{
-		int key = note->getKeyNumber();
-		glm::mat4 scale;// = glm::scale(glm::mat4(1.0f), glm::vec3(key * 0.01));
-		glm::translate(scale, glm::vec3(key, 0, 0));
+		if (note != nullptr)
+		{
+			int key = note->getKeyNumber();//1 - 127
+			print(key);
+			//make it to range -10 +10
+			float yPos = (float)key / 127 * 20 - 10;
+
+			mat4 mat(1.0f);
+			mat = scale(mat, vec3(0.5, 0.1, 1));// y =  1/20 of the screen  
+			mat = translate(mat, vec3(0, yPos, 0));// y = -10 +10
+
+			shader.use();
+			shader.setMat4("matrix", mat);
+		}
+
+
 		shader.use();
-		shader.setMat4("matrix", scale);
+		quad->draw();
+		note = NewNote();
 	}
-
-
-	shader.use();
-	test->draw();
+	
 }
 
 smf::MidiEvent* Visualization::NewNote()
@@ -50,7 +69,6 @@ smf::MidiEvent* Visualization::NewNote()
 	//goes through the array of midi events stating from last event
 	for (nEvent; nEvent < track->getEventCount(); nEvent++)
 	{
-		std::cout << "here\n";
 		//smf::MidiEvent* currentEvent = &(track->getEvent(nEvent));
 		//is it "note on" event?
 		if (track->getEvent(nEvent).isNoteOn())

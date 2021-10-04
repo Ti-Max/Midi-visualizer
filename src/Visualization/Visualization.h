@@ -4,6 +4,8 @@
 #include "Shader/Shader.h"
 #include "MidiFile/Midifile.h"
 
+using namespace glm;
+
 class Visualization
 {
 public:
@@ -24,6 +26,6 @@ private:
 	//TEMPORAL render
 	Meshes quadMesh;
 	Shader shader;
-	GL::VAO* test;
+	GL::VAO* quad;
 };
 
