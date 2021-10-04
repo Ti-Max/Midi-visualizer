@@ -56,7 +56,7 @@ void Window::loop()
 {
 	//Audio
 	Audio::init();
-	Audio::addSource(new SoundSource(SourceInfo(0.5f)), "Background");
+	Audio::addSource(new SoundSource(SourceInfo(1.0f)), "Background");
 	Audio::addBuffer(new SoundBuffer("res/LoseYourself.wav"), "music");
 
 	Audio::addSource(new SoundSource(SourceInfo()), "click");
@@ -82,7 +82,8 @@ void Window::loop()
 	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.1f, 0.5f, 1.0f, 1.0f);
+		//glClearColor(0.1f, 0.5f, 1.0f, 1.0f);// light blue
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//black
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 

@@ -3,6 +3,7 @@
 #include <ctime>
 #include<iostream>
 #include <random>
+#include <glm/gtc/matrix_transform.hpp>
 void Visualization::Start(smf::MidiEventList* track)
 {
 	this->track = track;
@@ -29,10 +30,14 @@ void Visualization::Draw()
 	}
 
 	//Now we are checking if we got any new notes
-	if (NewNote() != nullptr)
+	smf::MidiEvent* note = NewNote();
+	if (note != nullptr)
 	{
+		int key = note->getKeyNumber();
+		glm::mat4 scale;// = glm::scale(glm::mat4(1.0f), glm::vec3(key * 0.01));
+		glm::translate(scale, glm::vec3(key, 0, 0));
 		shader.use();
-		shader.setVec3("color", glm::vec3((float)(rand() % 100) / 100, (float)(rand() % 100) / 100, (float)(rand() % 100) / 100));
+		shader.setMat4("matrix", scale);
 	}
 
 
