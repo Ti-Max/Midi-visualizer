@@ -3,7 +3,7 @@
 #include "VAO/Meshes.h"
 #include "Shader/Shader.h"
 #include "MidiFile/Midifile.h"
-
+#include <memory>
 using namespace glm;
 
 class Visualization
@@ -27,5 +27,7 @@ private:
 	Meshes quadMesh;
 	Shader shader;
 	GL::VAO* quad;
+	//current notes
+	std::map<int, std::shared_ptr<mat4>> matricies;
 };
 

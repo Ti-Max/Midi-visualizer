@@ -37,31 +37,40 @@ void Visualization::Draw()
 		return;
 	}
 
+
 	//Now we are checking if we got any new notes
-	smf::MidiEvent* note = NewNote();
-	while (note != nullptr)
+	smf::MidiEvent* note;
+	while((note = NewNote()) != nullptr)
 	{
-		if (note != nullptr)
+		if (note->isNoteOff())
+		{
+			matricies.erase(note->getKeyNumber());
+		}
+		else
 		{
 			int key = note->getKeyNumber();//1 - 127
 			print(key);
+			//compress to 50 - 100
+			float yPos = ((key < 50) ? 50 : (key > 100) ? 100 : key) - 50;
 			//make it to range -10 +10
-			float yPos = (float)key / 127 * 20 - 10;
+			yPos = yPos / 50 * 40 - 20;
 
-			mat4 mat(1.0f);
-			mat = scale(mat, vec3(0.5, 0.1, 1));// y =  1/20 of the screen  
-			mat = translate(mat, vec3(0, yPos, 0));// y = -10 +10
+			std::shared_ptr<mat4> mat = std::make_shared<mat4>(1.0f);
+			*mat = scale(*mat, vec3(0.5, 0.05, 1));// y =  1/40 of the screen  
+			*mat = translate(*mat, vec3(0, yPos, 0));// y = -10 +10
 
-			shader.use();
-			shader.setMat4("matrix", mat);
+			matricies.insert({ key, mat });
 		}
-
-
-		shader.use();
-		quad->draw();
-		note = NewNote();
 	}
-	
+	for (auto mat : matricies)
+	{
+		if (!mat.second)
+			print("errroorrooeroro");
+		shader.use();
+		mat4 m = *(mat.second);
+		shader.setMat4("matrix", m);
+		quad->draw();
+	}
 }
 
 smf::MidiEvent* Visualization::NewNote()
@@ -71,21 +80,22 @@ smf::MidiEvent* Visualization::NewNote()
 	{
 		//smf::MidiEvent* currentEvent = &(track->getEvent(nEvent));
 		//is it "note on" event?
-		if (track->getEvent(nEvent).isNoteOn())
+		if (track->getEvent(nEvent).isNoteOn() || track->getEvent(nEvent).isNoteOff())
 		{
 			//check if the time for this note has come
 			int now = clock() - startTime;
 			if (track->getEvent(nEvent).seconds * CLOCKS_PER_SEC < now)
 			{
 				//check if two notes pressed at the same time (optional)
-				if (track->getEvent(nEvent).tick != lastTick || firstNote)
+				//if (track->getEvent(nEvent).tick != lastTick || firstNote)
 				{
 
 					lastTick = track->getEvent(nEvent).tick;
 					std::cout << "in loop: " << now << "\t sec: " << track->getEvent(nEvent).seconds << std::endl;
-					if (firstNote)
-						firstNote = false;
-					return &(track->getEvent(nEvent));
+					//if (firstNote)
+					//	firstNote = false;
+
+					return &(track->getEvent(nEvent++));
 				}
 			}
 			else

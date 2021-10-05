@@ -82,8 +82,8 @@ void Window::loop()
 	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
-		//glClearColor(0.1f, 0.5f, 1.0f, 1.0f);// light blue
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//black
+		glClearColor(0.1f, 0.1f, 0.3f, 1.0f);// light blue
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//black
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 
