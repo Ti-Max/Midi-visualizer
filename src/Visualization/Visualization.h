@@ -6,6 +6,18 @@
 #include <memory>
 using namespace glm;
 
+struct NoteInfo
+{
+	NoteInfo(int n_key, int n_velocity, int n_noteOnTime, int n_duration): key(n_key), velocity(n_velocity), noteOnTime(n_noteOnTime), duration(n_duration){}
+	
+	int key = 0;
+	int velocity = 0;
+	// Note On event in seconds
+	float noteOnTime = 0;
+	//Duration in secondts
+	float duration = 0;
+};
+
 class Visualization
 {
 public:
@@ -28,6 +40,6 @@ private:
 	Shader shader;
 	GL::VAO* quad;
 	//current notes
-	std::map<int, std::shared_ptr<mat4>> matricies;
+	std::vector<const NoteInfo&> currentNotes;
 };
 

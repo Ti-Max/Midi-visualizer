@@ -480,6 +480,9 @@
     <ClCompile Include="src\Visualization\Visualization.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\Visualization\Pattern.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\include\MidiFile\Binasc.h">
@@ -1287,6 +1290,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Visualization\Visualization.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visualization\Pattern.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

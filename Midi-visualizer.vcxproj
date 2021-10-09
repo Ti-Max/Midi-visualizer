@@ -299,6 +299,7 @@
     <ClCompile Include="src\Shader\Shader.cpp" />
     <ClCompile Include="src\VAO\Meshes.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
+    <ClCompile Include="src\Visualization\Pattern.cpp" />
     <ClCompile Include="src\Visualization\Visualization.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
@@ -570,6 +571,7 @@
     <ClInclude Include="src\VAO\Meshes.h" />
     <ClInclude Include="src\VAO\VAO.h" />
     <ClInclude Include="src\VAO\Vertex.h" />
+    <ClInclude Include="src\Visualization\Pattern.h" />
     <ClInclude Include="src\Visualization\Visualization.h" />
     <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
