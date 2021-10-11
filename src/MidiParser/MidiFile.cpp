@@ -175,10 +175,12 @@ bool MidiFile::read(const std::string& filename) {
 	input.open(filename.c_str(), std::ios::binary | std::ios::in);
 
 	if (!input.is_open()) {
+		std::cout << "Could not open file " << filename<<"\n";
+		TIMO_isOpen = false;
 		m_rwstatus = false;
 		return m_rwstatus;
 	}
-
+	TIMO_isOpen = true;
 	m_rwstatus = read(input);
 	return m_rwstatus;
 }

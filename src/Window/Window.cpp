@@ -1,4 +1,7 @@
 //TODO: streaming files, in stead of uning one buffer. Because of the memory
+//TODO: rewind
+//TODO: mp3 support, converter
+//TODO: better midi parser
 
 #include "Window.h"
 #include "VAO/VAO.h"
@@ -54,7 +57,7 @@ void Window::createWindow(const std::string& title, int width, int height)
 }
 int scroll = 0;
 bool isCtr = false;
-
+Visualization render;
 void Window::loop()
 {
 	//Audio
@@ -67,26 +70,16 @@ void Window::loop()
 
 
 
-	std::srand(time(0));
-	
-	std::string midiName("res/LoseYourself.mid");
-	MidiFile midifile(midiName);
-	if (!midifile.status())
-	{
-		std::cout << "Failed to Open midi file \"" << midiName << "\"\n";
-	}
-	midifile.doTimeAnalysis();
-	midifile.linkNotePairs();
-	//midifile.makeDeltaTicks();
 
-	int tracksCount = midifile.getTrackCount();
-	std::cout<<tracksCount<<"\n";
-	MidiEventList* track_1 = &(midifile[1]);
-
-	Visualization render;
 	
 
-	render.Start(track_1);
+ 
+	render.addMidiTracks("res/LoseYourself.mid", { {1, LINES_PATTERN, 0.0f} });
+
+	//unsigned int tracks2[1] = {3};
+	//render.addMidiTracks("res/ThemeA.mid", tracks2, 2);
+
+	render.Start();
 	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
@@ -95,10 +88,9 @@ void Window::loop()
 		glClearColor(0.1f, 0.1f, 0.3f, 1.0f);// light blue
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//black
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		scroll = 0;
 		glfwPollEvents();
 
-		render.Draw(scroll, isCtr);
+		render.Draw();
 
 		glfwSwapBuffers(window);
 	}
@@ -148,9 +140,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		if (!Audio::isPaused("Background"))
-			Audio::Pause("Background");
+			Audio::Pause("Background"), render.Pause();
 		else
-			Audio::Play("Background");
+			Audio::Play("Background"), render.Resume();
 	}
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

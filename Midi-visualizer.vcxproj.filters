@@ -480,7 +480,10 @@
     <ClCompile Include="src\Visualization\Visualization.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\Visualization\Pattern.cpp">
+    <ClCompile Include="src\Visualization\VisualTrack.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Visualization\Patterns\LinesPattern.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1292,7 +1295,16 @@
     <ClInclude Include="src\Visualization\Visualization.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\Visualization\Pattern.h">
+    <ClInclude Include="src\Visualization\VisualTrack.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visualization\Patterns\LinesPattern.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visualization\Patterns\IPattern.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visualization\Patterns\ListOfPatterns.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

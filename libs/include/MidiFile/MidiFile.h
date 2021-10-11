@@ -38,6 +38,11 @@ class _TickTime {
 
 class MidiFile {
 	public:
+		//TIMO
+		bool TIMO_isOpen = false;
+
+
+
 		               MidiFile                    (void);
 		               MidiFile                    (const std::string& filename);
 		               MidiFile                    (std::istream& input);

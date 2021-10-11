@@ -1,49 +1,35 @@
 #pragma once
-#include "VAO/VAO.h"
-#include "VAO/Meshes.h"
-#include "Shader/Shader.h"
 #include "MidiFile/Midifile.h"
-#include <memory>
-using namespace glm;
+#include "VisualTrack.h"
 
-struct NoteInfo
-{
-	NoteInfo(int n_key, int n_velocity, float n_noteOnTime, float n_duration): key(n_key), velocity(n_velocity), noteOnTime(n_noteOnTime), duration(n_duration){}
-	
-	int key = 0;
-	int velocity = 0;
-	// Note On event in seconds
-	float noteOnTime = 0;
-	//Duration in secondts
-	float duration = 0;
-};
 
 class Visualization
 {
 public:
+	void addMidiTracks(const std::string& fileName, const std::vector<TrackInfo> &tracksInfo);
 	//call this before main loop
-	void Start(smf::MidiEventList* track);
+	void Start();
+	~Visualization();
+
 	//call every frame
-	void Draw(int scroll, bool isCtr);
+	void Draw();
+
+	void Pause();
+	void Resume();
 
 	//Time delay for visualization in seconds
 	float timeDelay = 0;
 private:
-	int startTime = 0;
-	int lastTick = 0;
-	int nEvent = 0;
-	bool firstNote = true;
-	//this track will be visualized
-	smf::MidiEventList* track;
-	//----------------------------
-	smf::MidiEvent* NewNote();
-	int now();
-	//=============================
-	//TEMPORAL render
-	Meshes quadMesh;
-	Shader shader;
-	GL::VAO* quad;
-	//current notes
-	std::vector<NoteInfo> currentNotes;
+
+	std::vector<smf::MidiFile*> midifiles;
+	std::vector<VisualTrack*> tracks;
+	
+	//Time in clock (0.001 seconds) when visualization started;
+	long startTime = 0;
+	long pauseTime = 0;
+	bool isPaused = false;
+	//Used to handle pauses and rewinds
+	long technikalDelay = 0;
+	long TimeMark();
 };
 
