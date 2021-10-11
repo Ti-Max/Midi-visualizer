@@ -4,7 +4,8 @@ static Audio* _instance = nullptr;
 
 Audio* Audio::get()
 {
-	init();
+	if (_instance == nullptr)
+		init();
 	return _instance;
 }
 
@@ -75,12 +76,13 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-	for (auto buffer : soundBuffers) {
-		delete buffer.second;
-	}
-	soundBuffers.clear();
 	for (auto source : soundSources) {
 		delete source.second;
 	}
 	soundSources.clear();
+	for (auto buffer : soundBuffers) {
+		delete buffer.second;
+	}
+	soundBuffers.clear();
+
 }

@@ -1,11 +1,11 @@
-//Seems like Audio goes faster. FIX IT
+﻿//Seems like Audio goes faster. FIX IT
 #include "Visualization.h"
 
 #include <ctime>
 #include<iostream>
 #include <random>
 #include <glm/gtc/matrix_transform.hpp>
-
+#include<chrono>
 using namespace glm;
 
 void Visualization::Start(smf::MidiEventList* track)
@@ -29,74 +29,96 @@ void print(T data) {
 	std::cout << data << "\n";
 }
 
-void Visualization::Draw()
+int scrollPos = 0;
+int scrollScale = 0;
+void Visualization::Draw(int scroll, bool isCtr)
 {
-	if (startTime == 0) 
+	if (startTime == 0)
 	{
 		std::cout << "Call function Start() before calling Draw!!\n";
 		return;
 	}
-
-
 	//Now we are checking if we got any new notes
-	smf::MidiEvent* note;
-	while((note = NewNote()) != nullptr)
-	{
-		for (auto it = currentNotes.begin(); it != currentNotes.end(); ++it)
+		smf::MidiEvent* note;
+		while ((note = NewNote()) != nullptr)
 		{
-			if (note->getKeyNumber() == (*it).key)
+			if (note->isNoteOn())
 			{
-				currentNotes.erase(it);
-				break;
+				//Checking if this note already pressed, then erase it 
+				//MAY there is a better way
+				for (auto it = currentNotes.begin(); it != currentNotes.end(); ++it)
+				{
+					if (note->getKeyNumber() == (*it).key)
+					{
+						currentNotes.erase(it);
+						break;
+					}
+				}
+				currentNotes.push_back(NoteInfo(note->getKeyNumber(), note->getVelocity(), note->seconds, note->getDurationInSeconds()));
+			}
+			else
+			{
+				//Erase note from array if it is NoteOff event
+				for (auto it = currentNotes.begin(); it != currentNotes.end(); it++)
+				{
+					if ((*it).key == note->getKeyNumber())
+					{
+						currentNotes.erase(it);
+						break;
+					}
+				}
 			}
 		}
 
-		currentNotes.push_back(NoteInfo(note->getKeyNumber(), note->getVelocity(), note->seconds, note->getDurationInSeconds()));
 
-		//use that  or just check for note duration 
-		//if (note->isNoteOff())
-		//{
-		//	currentNotes.erase(note->getKeyNumber());
-		//}
-		//else
-		//{
-			//int key = note->getKeyNumber();//1 - 127
-			////compress to 50 - 100
-			//float yPos = ((key < 50) ? 50 : (key > 100) ? 100 : key) - 50;
-			////make it to range -10 +10
-			//yPos = yPos / 50 * 40 - 20;
-			//std::shared_ptr<mat4> mat = std::make_shared<mat4>(1.0f);
-			//*mat = scale(*mat, vec3(0.5, 0.05, 1));// y =  1/40 of the screen  
-			//*mat = translate(*mat, vec3(0, yPos, 0));// y = -10 +10
-			//Checking if this note already exists and delete it, probably bad way
-		//}
-	}
-
-	for (auto it = currentNotes.begin(); it != currentNotes.end(); ++it)
-	{
-		//if note is done playing, erase from vector and to the next note
-		if ((*it).duration + (*it).noteOnTime < (clock() - startTime) * CLOCKS_PER_SEC)
+		for (auto it = currentNotes.begin(); it != currentNotes.end(); it++)
 		{
-			currentNotes.erase(it);
-			continue;
+			int range[2] = { 50, 100};// 0 - 50
+			//if (scroll)
+			//{
+			//	if (isCtr)
+			//		scrollPos += scroll;
+			//	else
+			//		scrollScale += scroll;
+			//}
+			//if (scrollPos)
+			//{
+			//	range[0] += scrollPos * 2;
+			//	range[1] += scrollPos * 2;
+			//}
+			//if(scrollScale)
+			//{
+			//	range[0] += scrollScale * 2;
+			//	range[1] -= scrollScale * 2;
+			//}
+			//print(scroll);
+			int noteCount = range[1] - (range[0]);
+			int& key = (*it).key;//1 - 127
+
+			float fade = 1 - ((float)now() / CLOCKS_PER_SEC - (*it).noteOnTime) /(*it).duration;
+			//float fade = 1;
+			float scaling;
+			float opacity = 1;
+			if (fade < 0.5) {
+				scaling = 4 * (*it).velocity/100 * 0.25;
+				opacity = fade * 2 * (*it).velocity / 100;
+			}
+			else
+			{
+				scaling = (4 * (*it).velocity / 100 * fade * fade);
+			}
+
+			mat4 mat(1.0f);
+			mat = scale(mat, vec3(1.f, 1.0f / (float)noteCount, 1));// y = size of a note on display; y =
+			mat = translate(mat, vec3(0, noteCount * (((float)(key - range[0]) / (float)noteCount * 2) -1), 0));// y = -5 +5
+			mat = scale(mat, vec3(1.f, scaling, 1.f));
+
+			shader.use();
+			shader.setMat4("matrix", mat);
+			shader.setVec4("color", vec4(0, 0, 1, opacity));
+			quad->draw();
 		}
-		int key = note->getKeyNumber();//1 - 127
-		//compress to 50 - 100
-		float yPos = ((key < 50) ? 50 : (key > 100) ? 100 : key) - 50;
-		//make it to range -10 +10
-		yPos = yPos / 50 * 40 - 20;
-		std::shared_ptr<mat4> mat = std::make_shared<mat4>(1.0f);
-		*mat = scale(*mat, vec3(0.5, 0.05, 1));// y =  1/40 of the screen  
-		*mat = translate(*mat, vec3(0, yPos, 0));// y = -10 +10
-
-
-		shader.use();
-		shader.setMat4("matrix", m);
-		quad->draw();
-	}
-
 }
-
 
 smf::MidiEvent* Visualization::NewNote()
 {
@@ -105,24 +127,19 @@ smf::MidiEvent* Visualization::NewNote()
 	{
 		smf::MidiEvent* currentEvent = &(track->getEvent(nEvent));
 		//is it "note on" event?
-		if (currentEvent->isNoteOn()/* || currentEvent->isNoteOff()*/)
+		if (currentEvent->isNoteOn() || currentEvent->isNoteOff())
 		{
 			//check if the time for this note has come
-			int now = clock() - startTime;
-			if (currentEvent->seconds * CLOCKS_PER_SEC < now)
+			if (currentEvent->seconds * CLOCKS_PER_SEC < now())
 			{
 				//check if two notes pressed at the same time (optional)
 				//if (track->getEvent(nEvent).tick != lastTick || firstNote)
-				{
-
-					//lastTick = track->getEvent(nEvent).tick;
-					const char* state = (track->getEvent(nEvent).isNoteOn())? "On" : "off";
-					std::cout << "Key " << currentEvent->getKeyNumber()<<"\t"<< state << "\t sec : " << currentEvent->seconds << std::endl;
-					//if (firstNote)
-					//	firstNote = false;
-
-					return &(track->getEvent(nEvent++));
-				}
+				//lastTick = track->getEvent(nEvent).tick;
+				//const char* state = (track->getEvent(nEvent).isNoteOn())? "On" : "off";
+				//std::cout << "Key " << currentEvent->getKeyNumber()<<"\t"<< state << "\t sec : " << currentEvent->seconds << std::endl;
+				//if (firstNote)
+				//	firstNote = false;
+				return &(track->getEvent(nEvent++));
 			}
 			else
 			{
@@ -134,4 +151,10 @@ smf::MidiEvent* Visualization::NewNote()
 	}
 	//std::cout << "Track is finished\n";
 	return nullptr;
+}
+
+//Return time
+int Visualization::now()
+{
+	return clock() - startTime;
 }

@@ -10,6 +10,7 @@ class Audio
 {
 public:
 	static Audio* get();
+	~Audio();
 	//nullptr = default devise;
 	static void init(const char* deviceName = nullptr);
 
@@ -25,7 +26,6 @@ private:
 	std::map<std::string, SoundSource*> soundSources;
 	std::map<std::string, SoundBuffer*> soundBuffers;
 	Audio();
-	~Audio();
 	SoundContext context;
 
 };
