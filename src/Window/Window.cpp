@@ -62,22 +62,15 @@ void Window::loop()
 {
 	//Audio
 	Audio::init();
-	Audio::addSource(new SoundSource(SourceInfo(1.0f)), "Background");
-	Audio::addBuffer(new SoundBuffer("res/LoseYourself.wav"), "music");
+	Audio::addSource(new SoundSource(SourceInfo(0.3f)), "Background");
+	Audio::addBuffer(new SoundBuffer("res/Never-Gonna-Give-You-Up-3.wav"), "music");
 
-	//Audio::addSource(new SoundSource(SourceInfo()), "click");
-	//Audio::addBuffer(new SoundBuffer("res/click.wav"), "click");
-
-
-
-
-	
-
- 
-	render.addMidiTracks("res/LoseYourself.mid", { {1, LINES_PATTERN, 0.0f} });
-
-	//unsigned int tracks2[1] = {3};
-	//render.addMidiTracks("res/ThemeA.mid", tracks2, 2);
+	render.addMidiTracks("res/Never-Gonna-Give-You-Up-3.mid",
+		{
+		 /*second track*/{4, LINES_PATTERN, new LinesSetting(glm::vec2(40, 100), glm::vec3(0.5, 0, 0),	LINES_TYPE_VERTICAL_DOUBLE)},
+		 /*first track*/ {9, LINES_PATTERN, new LinesSetting(glm::vec2(60, 88), glm::vec3(1, 1, 0),		LINES_TYPE_HORIZONTAL)},
+		 /*third track*/ {2, LINES_PATTERN, new LinesSetting(glm::vec2(40, 100), glm::vec3(0, 1, 1), 	LINES_TYPE_HORIZONTAL)},
+		}, true);
 
 	render.Start();
 	Audio::Play("Background", "music");
@@ -135,8 +128,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
 		setFullScreenMode(window);
-	if (key == GLFW_KEY_LEFT_CONTROL && (action == GLFW_PRESS || action == GLFW_RELEASE))
-		isCtr = !isCtr;
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		if (!Audio::isPaused("Background"))

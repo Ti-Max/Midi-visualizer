@@ -8,7 +8,7 @@ void print(T data) {
 	std::cout << data << "\n";
 }
 
-void Visualization::addMidiTracks(const std::string& fileName, const std::vector<TrackInfo>& tracksInfo)
+void Visualization::addMidiTracks(const std::string& fileName, const std::vector<TrackInfo>& tracksInfo, bool sortTrackBychannel = false)
 {
 	smf::MidiFile* midifile = new smf::MidiFile(fileName);
 	midifiles.push_back(midifile);
@@ -23,6 +23,8 @@ void Visualization::addMidiTracks(const std::string& fileName, const std::vector
 
 	midifile->doTimeAnalysis();
 	midifile->linkNotePairs();
+	if(sortTrackBychannel)
+		midifile->splitTracksByChannel();
 
 	std::cout << "File " << fileName << "\t has " << midifile->getTrackCount() << " tracks\n";
 

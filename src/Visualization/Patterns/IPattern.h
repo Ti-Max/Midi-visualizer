@@ -1,10 +1,5 @@
 #pragma once
-
-enum Patterns
-{
-	LINES_PATTERN
-};
-
+#include<iostream>
 struct NoteInfo
 {
 	NoteInfo(int n_key, int n_velocity, float n_noteOnTime, float n_duration) : key(n_key), velocity(n_velocity), noteOnTime(n_noteOnTime), duration(n_duration) {}
@@ -17,14 +12,17 @@ struct NoteInfo
 	float duration = 0;
 };
 
-struct ISettings {};
-
+class ISettings 
+{
+public:
+	virtual ~ISettings() {};
+};
 class IPattern
 {
 public:
-	virtual void SetUp(ISettings setting) = 0;
+	//Child has to delete settings
+	virtual void SetUp(ISettings* setting) = 0;
 	virtual void Draw(const NoteInfo &note, long visualizationTime) = 0;
-protected:
-	ISettings settings;
+	virtual ~IPattern(){};
 };
 

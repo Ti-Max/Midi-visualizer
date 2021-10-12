@@ -300,6 +300,7 @@
     <ClCompile Include="src\VAO\Meshes.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
     <ClCompile Include="src\Visualization\Patterns\LinesPattern.cpp" />
+    <ClCompile Include="src\Visualization\Patterns\SquaresPattern.cpp" />
     <ClCompile Include="src\Visualization\Visualization.cpp" />
     <ClCompile Include="src\Visualization\VisualTrack.cpp" />
     <ClCompile Include="src\Window\Window.cpp" />
@@ -575,6 +576,7 @@
     <ClInclude Include="src\Visualization\Patterns\IPattern.h" />
     <ClInclude Include="src\Visualization\Patterns\LinesPattern.h" />
     <ClInclude Include="src\Visualization\Patterns\ListOfPatterns.h" />
+    <ClInclude Include="src\Visualization\Patterns\SquaresPattern.h" />
     <ClInclude Include="src\Visualization\Visualization.h" />
     <ClInclude Include="src\Visualization\VisualTrack.h" />
     <ClInclude Include="src\Window\Window.h" />

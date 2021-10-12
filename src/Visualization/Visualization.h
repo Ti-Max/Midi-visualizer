@@ -6,7 +6,7 @@
 class Visualization
 {
 public:
-	void addMidiTracks(const std::string& fileName, const std::vector<TrackInfo> &tracksInfo);
+	void addMidiTracks(const std::string& fileName, const std::vector<TrackInfo> &tracksInfo, bool sortTrackBychannel);
 	//call this before main loop
 	void Start();
 	~Visualization();

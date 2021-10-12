@@ -1,14 +1,15 @@
 #pragma once
 #include "MidiFile/Midifile.h"
-#include "Patterns/IPattern.h"
+#include "Patterns/ListOfPatterns.h"
 
 struct TrackInfo
 {
-	TrackInfo(unsigned int trackId, Patterns patternName, float timeDelay = 0) : trackId(trackId), patternName(patternName), timeDelay(timeDelay) {}
+	TrackInfo(unsigned int trackId, Patterns patternName, ISettings* patternSettings,  float timeDelay = 0) : trackId(trackId), patternName(patternName), settings(patternSettings), timeDelay(timeDelay) {}
 	//track id in the midi file
 	unsigned int trackId = 0;
 
 	Patterns patternName = LINES_PATTERN;
+	ISettings *settings = nullptr;
 	//time delay relative to the Visualization
 	float timeDelay = 0;
 };

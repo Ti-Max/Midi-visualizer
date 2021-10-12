@@ -1,6 +1,5 @@
 #include "VisualTrack.h"
 
-#include "Patterns/ListOfPatterns.h"
 using namespace glm;
 
 VisualTrack::VisualTrack(smf::MidiEventList* track, const TrackInfo& info)
@@ -14,12 +13,15 @@ VisualTrack::VisualTrack(smf::MidiEventList* track, const TrackInfo& info)
 	case LINES_PATTERN:
 		pattern = new LinesPattern;
 		break;
+	case SQUARES_PATTERN:
+		pattern = new SquaresPattern;
+		break;
 	default:
 		pattern = nullptr;
 		break;
 	}
 	if (pattern != nullptr)
-		pattern->SetUp();
+		pattern->SetUp(info.settings);
 }
 
 void VisualTrack::Start()
