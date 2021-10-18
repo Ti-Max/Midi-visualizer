@@ -75,14 +75,27 @@ void Window::loop()
 		 /*first track*/ {2, SQUARES_PATTERN, new SquaresSettings()},
 		}, true);
 
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	unsigned int frameBuffer;
+	unsigned int texture;
+
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_)
+	glGenFramebuffers(1, &frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+
 	render.Start();
 	Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 		glClearColor(0.1f, 0.1f, 0.3f, 1.0f);// light blue
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);//black
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glfwPollEvents();
 
