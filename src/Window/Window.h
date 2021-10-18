@@ -1,6 +1,9 @@
 #pragma once
 #include "GL/glew.h"
 #include "GLFW/GLFW.h"
+
+
+
 class Window
 {
 public:
@@ -16,7 +19,6 @@ private:
 	GLFW glfw;
 	GLFWwindow* window;
 
-	int height;
-	int width;
+
 };
 

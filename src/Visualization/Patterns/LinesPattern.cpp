@@ -36,7 +36,7 @@ void LinesPattern::Draw(const NoteInfo& note, long visualizationTime)
 	if (settings->type ==LINES_TYPE_VERTICAL_DOUBLE)
 	{
 		mat4 mat(1.0f);
-		mat = glm::rotate(mat, radians(-90.0f), glm::vec3(0.0, 0.0, 1.0));
+		mat = glm::rotate(mat, radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 		mat = scale(mat, vec3(1.f, 1.0f / (float)noteCount, 1));// y = size of a note on display; y =
 		mat = translate(mat, vec3(0, noteCount * (((float)(key - range[0]) / (float)noteCount * 2) - 1), 0));// y = -5 +5
 		mat = scale(mat, vec3(1.f, scaling, 1.f));
@@ -51,7 +51,7 @@ void LinesPattern::Draw(const NoteInfo& note, long visualizationTime)
 	mat4 mat(1.0f);
 	if (settings->type == LINES_TYPE_VERTICAL || settings->type == LINES_TYPE_VERTICAL_DOUBLE)
 	{
-		mat = glm::rotate(mat, radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		mat = glm::rotate(mat, radians(-90.0f), glm::vec3(0.0, 0.0, 1.0));
 	}
 	mat = scale(mat, vec3(1.f, 1.0f / (float)noteCount, 1));// y = size of a note on display; y =
 	mat = translate(mat, vec3(0, noteCount * (((float)(key - range[0]) / (float)noteCount * 2) - 1), 0));// y = -5 +5

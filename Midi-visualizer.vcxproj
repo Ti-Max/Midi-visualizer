@@ -122,7 +122,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\maxti\source\repos\Midi-visualizer\libs\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sndfile.lib;openal32.lib;opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc142-mtd.lib;sndfile.lib;openal32.lib;opengl32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -296,6 +296,7 @@
     <ClCompile Include="src\MidiParser\MidiEventList.cpp" />
     <ClCompile Include="src\MidiParser\MidiFile.cpp" />
     <ClCompile Include="src\MidiParser\MidiMessage.cpp" />
+    <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\Shader\Shader.cpp" />
     <ClCompile Include="src\VAO\Meshes.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
@@ -569,6 +570,7 @@
     <ClInclude Include="src\Audio\SoundContext.h" />
     <ClInclude Include="src\Audio\SoundSource.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
+    <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\Shader\Shader.h" />
     <ClInclude Include="src\VAO\Meshes.h" />
     <ClInclude Include="src\VAO\VAO.h" />

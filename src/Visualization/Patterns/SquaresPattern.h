@@ -1,5 +1,8 @@
 #pragma once
 #include"IPattern.h"
+#include "Model/Model.h"
+
+
 
 class SquaresSettings : public ISettings
 {
@@ -15,7 +18,9 @@ public:
 	~SquaresPattern();
 private:
 	SquaresSettings* settings;
-
+	Model square;
+	Shader shader;
+	GL::VAO vao;
 
 };
 

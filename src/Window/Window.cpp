@@ -12,6 +12,9 @@
 #include "Audio/Audio.h"
 #include "Visualization/Visualization.h"
 using namespace smf;
+int height;
+int width;
+
 
 Window::Window(const std::string& title, int width, int height)
 {
@@ -22,13 +25,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-void Window::createWindow(const std::string& title, int width, int height)
+void Window::createWindow(const std::string& title, int widtht, int heightt)
 {
 	if (!glfw.inIt())
 		return;
 
-	this->height = height;
-	this->width = width;
+	height = heightt;
+	width = widtht;
 
 	window = glfwCreateWindow(width, height + 1, title.c_str(), nullptr, nullptr);
 
@@ -62,14 +65,14 @@ void Window::loop()
 {
 	//Audio
 	Audio::init();
-	Audio::addSource(new SoundSource(SourceInfo(0.3f)), "Background");
-	Audio::addBuffer(new SoundBuffer("res/Never-Gonna-Give-You-Up-3.wav"), "music");
+	Audio::addSource(new SoundSource(SourceInfo(0.1f)), "Background");
+	//Audio::addBuffer(new SoundBuffer("res/Never-Gonna-Give-You-Up-3.wav"), "music");
+	Audio::addBuffer(new SoundBuffer("res/ThemeA.wav"), "music");
 
-	render.addMidiTracks("res/Never-Gonna-Give-You-Up-3.mid",
+	render.addMidiTracks("res/ThemeA.mid",
 		{
-		 /*second track*/{4, LINES_PATTERN, new LinesSetting(glm::vec2(40, 100), glm::vec3(0.5, 0, 0),	LINES_TYPE_VERTICAL_DOUBLE)},
-		 /*first track*/ {9, LINES_PATTERN, new LinesSetting(glm::vec2(60, 88), glm::vec3(1, 1, 0),		LINES_TYPE_HORIZONTAL)},
-		 /*third track*/ {2, LINES_PATTERN, new LinesSetting(glm::vec2(40, 100), glm::vec3(0, 1, 1), 	LINES_TYPE_HORIZONTAL)},
+		 /*second track*/{3, LINES_PATTERN, new LinesSetting(glm::vec2(15, 75), glm::vec3(0.5, 0, 0),	LINES_TYPE_VERTICAL_DOUBLE)},
+		 /*first track*/ {2, SQUARES_PATTERN, new SquaresSettings()},
 		}, true);
 
 	render.Start();
@@ -117,8 +120,10 @@ void setFullScreenMode(GLFWwindow* window)
 		glfwSetWindowMonitor(window, monitor, 1000, 300, mode->width, mode->height, mode->refreshRate);
 	}
 }
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int widtht, int heightt)
 {
+	width = widtht;
+	height = heightt;
 	glViewport(0, 0, width, height);
 }
 int lastScroll = 0;
