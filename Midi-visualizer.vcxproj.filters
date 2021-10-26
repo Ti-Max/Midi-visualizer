@@ -421,6 +421,8 @@
     </None>
     <None Include="res\shaders\quadShader.fs" />
     <None Include="res\shaders\quadShader.vs" />
+    <None Include="res\shaders\screenShader.fs" />
+    <None Include="res\shaders\screenShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -490,6 +492,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Model\Model.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FrameBuffer\FrameBuffer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1317,6 +1322,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\Model\Model.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FrameBuffer\FrameBuffer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

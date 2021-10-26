@@ -280,6 +280,8 @@
     <None Include="README.md" />
     <None Include="res\shaders\quadShader.fs" />
     <None Include="res\shaders\quadShader.vs" />
+    <None Include="res\shaders\screenShader.fs" />
+    <None Include="res\shaders\screenShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="libs\include\glm\detail\glm.cpp" />
@@ -290,6 +292,7 @@
     <ClCompile Include="src\Audio\SoundBuffer.cpp" />
     <ClCompile Include="src\Audio\SoundContext.cpp" />
     <ClCompile Include="src\Audio\SoundSource.cpp" />
+    <ClCompile Include="src\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="src\GLFW\GLFW.cpp" />
     <ClCompile Include="src\MidiParser\Binasc.cpp" />
     <ClCompile Include="src\MidiParser\MidiEvent.cpp" />
@@ -569,6 +572,7 @@
     <ClInclude Include="src\Audio\SoundBuffer.h" />
     <ClInclude Include="src\Audio\SoundContext.h" />
     <ClInclude Include="src\Audio\SoundSource.h" />
+    <ClInclude Include="src\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="src\GLFW\GLFW.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\Shader\Shader.h" />

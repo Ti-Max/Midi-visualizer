@@ -21,6 +21,20 @@ void Meshes::load()
 
 	meshes.emplace("quad", &floor);
 	//------------------------------------------
+	//									   quad and tex
+	floor.addBufferData({
+		{ -1.0f, -1.0f, 0.0f},
+		{  1.0f, -1.0f, 0.0f},
+		{  1.0f,  1.0f, 0.0f},
+		{ -1.0f,  1.0f, 0.0f}
+		});
+	floor.addEBO({
+		0, 1, 2,
+		2, 3, 0
+		});
+
+	meshes.emplace("quad", &floor);
+	//------------------------------------------
 	//							  fullScreenQuad no texture
 	fullScreenQuad.addBufferData({
 		{-1.f, -1.f, 1.f},
@@ -32,8 +46,15 @@ void Meshes::load()
 		0, 1, 2,
 		2, 3, 0
 		});
+	fullScreenQuad.addBufferData({
+	{0.0, 0.0},
+	{ 1.0, 0.0 },
+	{ 1.0, 1.0 },
+	{ 0.0, 1.0 },
+		});
 
-	meshes.emplace("fullScreenQuad", &fullScreenQuad);
+
+	meshes.emplace("textureQuad", &fullScreenQuad);
 	//------------------------------------------
 	//										cube
 	cube.addBufferData({
