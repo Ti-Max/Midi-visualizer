@@ -11,6 +11,7 @@
 #include "MidiFile/Midifile.h"
 #include "Audio/Audio.h"
 #include "Visualization/Visualization.h"
+#include "FrameBuffer/FrameBuffer.h"
 using namespace smf;
 int height;
 int width;
@@ -58,6 +59,7 @@ void Window::createWindow(const std::string& title, int widtht, int heightt)
 	glfwSwapInterval(1);
 
 }
+bool vBlurOn, hBlurOn = false;
 int scroll = 0;
 bool isCtr = false;
 Visualization render;
@@ -65,7 +67,7 @@ void Window::loop()
 {
 	//Audio
 	Audio::init();
-	Audio::addSource(new SoundSource(SourceInfo(0.1f)), "Background");
+	Audio::addSource(new SoundSource(SourceInfo(0.01f)), "Background");
 	//Audio::addBuffer(new SoundBuffer("res/Never-Gonna-Give-You-Up-3.wav"), "music");
 	Audio::addBuffer(new SoundBuffer("res/ThemeA.wav"), "music");
 
@@ -80,25 +82,14 @@ void Window::loop()
 	GL::VAO* screenquad = meshes["textureQuad"];
 
 	Shader screenShader("screenShader");
+	Shader verticalBlurShader("verticalBlur");
+	Shader HorizontalBlurShader("HorizontalBlur");
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	// framebuffer configuration
-	// -------------------------
-	unsigned int framebuffer;
-	glGenFramebuffers(1, &framebuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	// create a color attachment texture
-	unsigned int textureColorbuffer;
-	glGenTextures(1, &textureColorbuffer);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	FrameBuffer frameBuffer({height, width});
+	FrameBuffer frameBufferBlur({height, width});
 
 
 	render.Start();
@@ -106,21 +97,32 @@ void Window::loop()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-			
-	 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		HorizontalBlurShader.use();
+		HorizontalBlurShader.setBool("blurOn", hBlurOn);
+		verticalBlurShader.use();
+		verticalBlurShader.setBool("blurOn", vBlurOn);
+
+
+		//Render whole scene into frameBuffer
+		frameBuffer.Bind();
 		glClearColor(0.4f, 0.1f, 0.5f, 1.0f);// light blue
 		glClear(GL_COLOR_BUFFER_BIT);
 		render.Draw();
+		frameBuffer.Unbind();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+		//Blur horizontali into frameBufferBlur
+		frameBufferBlur.Bind();
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		screenShader.use();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+		verticalBlurShader.use();
+		glBindTexture(GL_TEXTURE_2D, frameBuffer.GetColorAttachment());
 		screenquad->draw();
+		frameBufferBlur.Unbind();
 
+		//BlurVerticali into default frame buffer
+		glClear(GL_COLOR_BUFFER_BIT);
+		HorizontalBlurShader.use();
+		glBindTexture(GL_TEXTURE_2D, frameBufferBlur.GetColorAttachment());
+		screenquad->draw();
 		glfwSwapBuffers(window);
 	}
 }
@@ -166,6 +168,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
 		setFullScreenMode(window);
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+		hBlurOn = !hBlurOn;
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+		vBlurOn = !vBlurOn;
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		if (!Audio::isPaused("Background"))

@@ -21,7 +21,7 @@ void SquaresPattern::SetUp(ISettings* settings)
 		});
 
 	square.loadModel("res/Models/frame.obj");
-	shader.load("quadShader2");
+	shader.load("quadShader");
 }
 
 void SquaresPattern::Draw(const NoteInfo& note, long visualizationTime)
@@ -42,8 +42,8 @@ void SquaresPattern::Draw(const NoteInfo& note, long visualizationTime)
 	model = glm::scale(model, glm::vec3((note.key - range[0]) * (size[1] - size[0]) / noteCount + size[0]));
 
 	shader.use();
-	shader.setMat4("mat", model);
-	shader.setVec4("color", glm::vec4(1,0.4, 0.6,1));
+	shader.setMat4("matrix", model);
+	shader.setVec4("color", glm::vec4(1,0.6, 1,1));
 	square.meshes[0]->draw();
 	//vao.draw();
 }
