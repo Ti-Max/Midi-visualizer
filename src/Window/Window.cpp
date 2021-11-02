@@ -43,6 +43,7 @@ void Window::createWindow(const std::string& title, int widtht, int heightt)
 	glfwSetCursorPos(window, width / 2, height / 2);
 	glfwSetScrollCallback(window, scroll_callback);
 	glfwSetWindowPos(window, 1920 - width, 200);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
@@ -81,15 +82,25 @@ void Window::loop()
 	meshes.load();
 	GL::VAO* screenquad = meshes["textureQuad"];
 
-	Shader screenShader("screenShader");
+	Shader hdrShader("hdrShader");
 	Shader verticalBlurShader("verticalBlur");
 	Shader HorizontalBlurShader("HorizontalBlur");
+	Shader mixTextures("mixTextures");
+	Shader screenShader("screenShader");
+	mixTextures.use();
+	mixTextures.setInt("colorTexture", 0);
+	mixTextures.setInt("HDRcolorTexture", 1);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_MULTISAMPLE);
 
-	FrameBuffer frameBuffer({height, width});
-	FrameBuffer frameBufferBlur({height, width});
+
+	FrameBuffer frameBufferColor({height, width, true, 0});
+	FrameBuffer frameBufferHDRcolor({height, width, true, 0 });
+	FrameBuffer frameBufferBlurStart({height, width, true, 0 });
+	FrameBuffer frameBufferBlurFinish({height, width, true, 0 });
+	FrameBuffer frameBufferMixedColors({height, width, true, 0 });
 
 
 	render.Start();
@@ -97,32 +108,66 @@ void Window::loop()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
-		HorizontalBlurShader.use();
-		HorizontalBlurShader.setBool("blurOn", hBlurOn);
-		verticalBlurShader.use();
-		verticalBlurShader.setBool("blurOn", vBlurOn);
 
 
 		//Render whole scene into frameBuffer
-		frameBuffer.Bind();
-		glClearColor(0.4f, 0.1f, 0.5f, 1.0f);// light blue
+		frameBufferColor.Bind();
+		//glClearColor(0.4f, 0.1f, 0.5f, 1.0f);// light blue
 		glClear(GL_COLOR_BUFFER_BIT);
 		render.Draw();
-		frameBuffer.Unbind();
+		frameBufferColor.Unbind();
 
-		//Blur horizontali into frameBufferBlur
-		frameBufferBlur.Bind();
-		glClear(GL_COLOR_BUFFER_BIT);
-		verticalBlurShader.use();
-		glBindTexture(GL_TEXTURE_2D, frameBuffer.GetColorAttachment());
-		screenquad->draw();
-		frameBufferBlur.Unbind();
+		{
+			//get HDR texture
+			frameBufferHDRcolor.Bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			hdrShader.use();
+			glActiveTexture(GL_TEXTURE0);
 
-		//BlurVerticali into default frame buffer
+
+			glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
+
+			glGenerateMipmap(GL_TEXTURE_2D);
+			screenquad->draw();
+			frameBufferHDRcolor.Unbind();
+
+
+			//blur HDR color
+			frameBufferBlurStart.Bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			HorizontalBlurShader.use();
+			glBindTexture(GL_TEXTURE_2D, frameBufferHDRcolor.GetColorAttachment());
+			screenquad->draw();
+			frameBufferBlurStart.Unbind();
+
+
+			frameBufferBlurFinish.Bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			verticalBlurShader.use();
+			glBindTexture(GL_TEXTURE_2D, frameBufferBlurStart.GetColorAttachment());
+			screenquad->draw();
+			frameBufferBlurFinish.Unbind();
+
+
+			//combine blured HDR color and normal texture
+			frameBufferMixedColors.Bind();
+			glClear(GL_COLOR_BUFFER_BIT);
+			mixTextures.use();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, frameBufferBlurFinish.GetColorAttachment());
+			screenquad->draw();
+			frameBufferMixedColors.Unbind();
+			//=====
+		}
+
 		glClear(GL_COLOR_BUFFER_BIT);
-		HorizontalBlurShader.use();
-		glBindTexture(GL_TEXTURE_2D, frameBufferBlur.GetColorAttachment());
+		screenShader.use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, frameBufferBlurFinish.GetColorAttachment());
 		screenquad->draw();
+
 		glfwSwapBuffers(window);
 	}
 }

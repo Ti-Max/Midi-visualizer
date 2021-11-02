@@ -43,7 +43,7 @@ void SquaresPattern::Draw(const NoteInfo& note, long visualizationTime)
 
 	shader.use();
 	shader.setMat4("matrix", model);
-	shader.setVec4("color", glm::vec4(1,0.6, 1,1));
+	shader.setVec4("color", glm::vec4(8, 5, 1, 1));
 	square.meshes[0]->draw();
 	//vao.draw();
 }
