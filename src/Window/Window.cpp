@@ -11,7 +11,8 @@
 #include "MidiFile/Midifile.h"
 #include "Audio/Audio.h"
 #include "Visualization/Visualization.h"
-#include "FrameBuffer/FrameBuffer.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 using namespace smf;
 int height;
 int width;
@@ -60,33 +61,43 @@ void Window::createWindow(const std::string& title, int widtht, int heightt)
 	glfwSwapInterval(1);
 
 }
-bool vBlurOn, hBlurOn = false;
-int scroll = 0;
-bool isCtr = false;
+static int pow2(int power)
+{
+	int n = 2;
+	for (int i = 1; i < power; i++)
+	{
+		n *= 2;
+	}
+	return n;
+}
+
+unsigned int bloomLevel = 0;
+bool filtring = false;
 Visualization render;
 void Window::loop()
 {
 	//Audio
 	Audio::init();
-	Audio::addSource(new SoundSource(SourceInfo(0.01f)), "Background");
+	Audio::addSource(new SoundSource(SourceInfo(0)), "Background");
 	//Audio::addBuffer(new SoundBuffer("res/Never-Gonna-Give-You-Up-3.wav"), "music");
 	Audio::addBuffer(new SoundBuffer("res/ThemeA.wav"), "music");
 
 	render.addMidiTracks("res/ThemeA.mid",
 		{
-		 /*second track*/{3, LINES_PATTERN, new LinesSetting(glm::vec2(15, 75), glm::vec3(0.5, 0, 0),	LINES_TYPE_VERTICAL_DOUBLE)},
-		 /*first track*/ {2, SQUARES_PATTERN, new SquaresSettings()},
+		 /*first track*/ {3, LINES_PATTERN, new LinesSetting(glm::vec2(15, 75), glm::vec3(0.5, 0, 0),	LINES_TYPE_VERTICAL_DOUBLE)},
+		 /*second track*/{2, SQUARES_PATTERN, new SquaresSettings()},
 		}, true);
-
 	Meshes meshes;
 	meshes.load();
 	GL::VAO* screenquad = meshes["textureQuad"];
+	Model bloomText("res/Models/testText.obj");
 
 	Shader hdrShader("hdrShader");
 	Shader verticalBlurShader("verticalBlur");
 	Shader HorizontalBlurShader("HorizontalBlur");
 	Shader mixTextures("mixTextures");
 	Shader screenShader("screenShader");
+	Shader quadShader("quadShader");
 	mixTextures.use();
 	mixTextures.setInt("colorTexture", 0);
 	mixTextures.setInt("HDRcolorTexture", 1);
@@ -95,16 +106,22 @@ void Window::loop()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_MULTISAMPLE);
 
-
 	FrameBuffer frameBufferColor({height, width, true, 0});
 	FrameBuffer frameBufferHDRcolor({height, width, true, 0 });
-	FrameBuffer frameBufferBlurStart({height, width, true, 0 });
-	FrameBuffer frameBufferBlurFinish({height, width, true, 0 });
+	for (int i = 1; i <3; i++)
+	{
+		//framebuffers.push_back(new FrameBuffer({ height / pow2(i) , width / pow2(i), true, 0 }));//horizontal blur
+		//framebuffers.push_back(new FrameBuffer({ height / pow2(i), width / pow2(i) , true, 0 }));//vertical blur
+		framebuffers.push_back(new FrameBuffer({ height  , width, true, i }));//horizontal blur
+		framebuffers.push_back(new FrameBuffer({ height , width , true, i }));//vertical blur
+	}
+	FrameBuffer frameBufferBlurStart({ height, width, true, 0 });
+	FrameBuffer frameBufferBlurFinish({ height, width, true, 0 });
 	FrameBuffer frameBufferMixedColors({height, width, true, 0 });
 
 
 	render.Start();
-	Audio::Play("Background", "music");
+	//Audio::Play("Background", "music");
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -114,58 +131,68 @@ void Window::loop()
 		frameBufferColor.Bind();
 		//glClearColor(0.4f, 0.1f, 0.5f, 1.0f);// light blue
 		glClear(GL_COLOR_BUFFER_BIT);
-		render.Draw();
+		quadShader.use();
+		glm::mat4 model(1.0f);
+		model = glm::scale(model, glm::vec3((float)height / (float)width, 1, 1));
+		quadShader.setMat4("matrix", model);
+		quadShader.setVec4("color", glm::vec4(8, 5, 1, 1));
+		//render.Draw();
+		bloomText.meshes[0]->draw();
 		frameBufferColor.Unbind();
 
+		//get HDR texture
+		frameBufferHDRcolor.Bind();
+		glClear(GL_COLOR_BUFFER_BIT);
+		hdrShader.use();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
+		screenquad->draw();
+		frameBufferHDRcolor.Unbind();
+		//-----------------------------------------------------------------
+
+		unsigned int lastColorTexture = frameBufferHDRcolor.GetColorAttachment();
+		for (int i = 0; i < framebuffers.size() - ((bloomLevel > framebuffers.size())? --bloomLevel : bloomLevel); i++)
 		{
-			//get HDR texture
-			frameBufferHDRcolor.Bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			hdrShader.use();
-			glActiveTexture(GL_TEXTURE0);
-
-
-			glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
-
-			glGenerateMipmap(GL_TEXTURE_2D);
-			screenquad->draw();
-			frameBufferHDRcolor.Unbind();
-
-
 			//blur HDR color
-			frameBufferBlurStart.Bind();
+			framebuffers[i]->Bind();
 			glClear(GL_COLOR_BUFFER_BIT);
-			HorizontalBlurShader.use();
-			glBindTexture(GL_TEXTURE_2D, frameBufferHDRcolor.GetColorAttachment());
+			if(i % 2)
+				verticalBlurShader.use();
+			else
+				HorizontalBlurShader.use();
+			glBindTexture(GL_TEXTURE_2D, lastColorTexture);
 			screenquad->draw();
-			frameBufferBlurStart.Unbind();
-
-
-			frameBufferBlurFinish.Bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			verticalBlurShader.use();
-			glBindTexture(GL_TEXTURE_2D, frameBufferBlurStart.GetColorAttachment());
-			screenquad->draw();
-			frameBufferBlurFinish.Unbind();
-
-
-			//combine blured HDR color and normal texture
-			frameBufferMixedColors.Bind();
-			glClear(GL_COLOR_BUFFER_BIT);
-			mixTextures.use();
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, frameBufferBlurFinish.GetColorAttachment());
-			screenquad->draw();
-			frameBufferMixedColors.Unbind();
-			//=====
+			framebuffers[i]->Unbind();
+			lastColorTexture = framebuffers[i]->GetColorAttachment();
 		}
+
+
+
+
+		//frameBufferBlurFinish.Bind();
+		//glClear(GL_COLOR_BUFFER_BIT);
+		//verticalBlurShader.use();
+		//glBindTexture(GL_TEXTURE_2D, frameBufferBlurStart.GetColorAttachment());
+		//screenquad->draw();
+		//frameBufferBlurFinish.Unbind();
+
+
+		//combine blured HDR color and normal texture
+		//frameBufferMixedColors.Bind();
+		//glClear(GL_COLOR_BUFFER_BIT);
+		//mixTextures.use();
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_2D, frameBufferColor.GetColorAttachment());
+		//glActiveTexture(GL_TEXTURE1);
+		//glBindTexture(GL_TEXTURE_2D, frameBufferBlurFinish.GetColorAttachment());
+		//screenquad->draw();
+		//frameBufferMixedColors.Unbind();
+		//=====	  z	
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		screenShader.use();
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, frameBufferBlurFinish.GetColorAttachment());
+		glBindTexture(GL_TEXTURE_2D, lastColorTexture);
 		screenquad->draw();
 
 		glfwSwapBuffers(window);
@@ -179,6 +206,9 @@ GLFWwindow* Window::getGlfwWindow()
 
 Window::~Window()
 {
+	for (auto buffer : framebuffers)
+		delete buffer;
+
 	delete Audio::get();
 	glfwDestroyWindow(window);
 }
@@ -214,9 +244,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_F11 && action == GLFW_PRESS)
 		setFullScreenMode(window);
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
-		hBlurOn = !hBlurOn;
-	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
-		vBlurOn = !vBlurOn;
+		bloomLevel++;
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS && bloomLevel>0)
+		bloomLevel--;
 	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
 	{
 		if (!Audio::isPaused("Background"))
@@ -227,5 +257,5 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	scroll += yoffset;
+	//scroll += yoffset;
 }

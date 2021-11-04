@@ -48,7 +48,7 @@ void FrameBuffer::GenColorTexture()
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	if (spec.mipMapLevel)
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -63,7 +63,7 @@ void FrameBuffer::GenColorTexture()
 
 }
 
-int pow2(int power)
+static int pow2(int power)
 {
 	int n = 2;
 	for (int i = 1; i < power; i++)
@@ -76,8 +76,7 @@ int pow2(int power)
 void FrameBuffer::Bind()
 {
 	glGetIntegerv(GL_VIEWPORT, defaultViewport);
-
-	//}
+	std::cout << spec.mipMapLevel << "\n";
 	if (spec.mipMapLevel)
 		glViewport(0, 0, spec.width / pow2(spec.mipMapLevel), spec.height / pow2(spec.mipMapLevel));
 	else

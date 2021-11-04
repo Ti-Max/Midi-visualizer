@@ -1,7 +1,8 @@
 #pragma once
 #include "GL/glew.h"
 #include "GLFW/GLFW.h"
-
+#include "FrameBuffer/FrameBuffer.h"
+#include <vector>
 
 
 class Window
@@ -18,7 +19,7 @@ public:
 private:
 	GLFW glfw;
 	GLFWwindow* window;
-
+	std::vector<FrameBuffer*> framebuffers;
 
 };
 
