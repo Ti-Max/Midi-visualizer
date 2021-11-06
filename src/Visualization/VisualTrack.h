@@ -4,7 +4,7 @@
 
 struct TrackInfo
 {
-	TrackInfo(unsigned int trackId, Patterns patternName, ISettings* patternSettings,  float timeDelay = 0) : trackId(trackId), patternName(patternName), settings(patternSettings), timeDelay(timeDelay) {}
+	TrackInfo(unsigned int trackId, Patterns patternName, ISettings* patternSettings,  float timeDelay, bool bloom) : trackId(trackId), patternName(patternName), settings(patternSettings), timeDelay(timeDelay), bloom(bloom){}
 	//track id in the midi file
 	unsigned int trackId = 0;
 
@@ -12,6 +12,7 @@ struct TrackInfo
 	ISettings *settings = nullptr;
 	//time delay relative to the Visualization
 	float timeDelay = 0;
+	bool bloom = false;
 };
 
 class VisualTrack

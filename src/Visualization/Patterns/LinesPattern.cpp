@@ -61,7 +61,7 @@ void LinesPattern::Draw(const NoteInfo& note, long visualizationTime)
 	
 	shader.use();
 	shader.setMat4("matrix", mat);
-	shader.setVec4("color", vec4(settings->basicColor, opacity));
+	shader.setVec4("color", vec4(settings->basicColor, opacity* fade));
 	quad->draw();
 }
 

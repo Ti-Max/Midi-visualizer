@@ -4,12 +4,13 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D screenTexture;
-
+uniform float threshold;
 void main()
 {
+
     vec3 texel = texture(screenTexture, TexCoords).rgb;
-    float brightness = (texel.r + texel.g + texel.b) / 3.0f;
-    if(brightness > 1.0f)
+    float brightness = texel.r * 0.2126 + texel.g * 0.7152 + texel.b * 0.0722;
+    if(brightness > threshold)
     {
         FragColor = vec4(texel, 1.0f);
     }

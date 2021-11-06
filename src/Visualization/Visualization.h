@@ -2,17 +2,21 @@
 #include "MidiFile/Midifile.h"
 #include "VisualTrack.h"
 
+#define ALL_TRACKS 0
+#define BLOOM_TRACKS 1
+#define NO_BLOOM_TRACKS 2
 
 class Visualization
 {
 public:
-	void addMidiTracks(const std::string& fileName, const std::vector<TrackInfo> &tracksInfo, bool sortTrackBychannel);
+	void addMidiTracks(const std::string& fileName, const std::vector<TrackInfo> &tracksInfo,  bool sortTrackBychannel);
 	//call this before main loop
 	void Start();
 	~Visualization();
 
 	//call every frame
-	void Draw();
+
+	void Draw(unsigned int tracksType);
 
 	void Pause();
 	void Resume();
@@ -22,6 +26,7 @@ public:
 private:
 
 	std::vector<smf::MidiFile*> midifiles;
+	std::vector<VisualTrack*> tracksWithBloom;
 	std::vector<VisualTrack*> tracks;
 	
 	//Time in clock (0.001 seconds) when visualization started;

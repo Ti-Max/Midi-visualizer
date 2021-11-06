@@ -17,6 +17,7 @@ public:
 	glm::vec2 viewRange = {1, 127};
 	glm::vec3 basicColor = glm::vec3(1);
 	int type = LINES_TYPE_VERTICAL;
+	bool bloomEnable = false;
 
 };
 

@@ -3,13 +3,8 @@ out vec4 FragColor;
   
 in vec2 TexCoords;
 uniform sampler2D screenTexture;
-const int radius = 6;
-float weight[radius] = float[] (0.19859610213125314
-  ,0.17571363439579307
-  ,0.12170274650962626
-  ,0.06598396774984912
-  ,0.028001560233780885
-  , 0.009300040045324049);
+const int radius = 3;
+float weight[radius] = float[] (0.5513789403178612, 0.21286350873425372, 0.011447021106815806);
 uniform bool blurOn = true;
 
 void main()

@@ -8,7 +8,7 @@ void print(T data) {
 	std::cout << data << "\n";
 }
 
-void Visualization::addMidiTracks(const std::string& fileName, const std::vector<TrackInfo>& tracksInfo, bool sortTrackBychannel = false)
+void Visualization::addMidiTracks(const std::string& fileName, const std::vector<TrackInfo>& tracksInfo,  bool sortTrackBychannel = false)
 {
 	smf::MidiFile* midifile = new smf::MidiFile(fileName);
 	midifiles.push_back(midifile);
@@ -35,7 +35,10 @@ void Visualization::addMidiTracks(const std::string& fileName, const std::vector
 			if (midifile->getEventCount(tracksInfo[i].trackId) != 0)
 			{
 				VisualTrack* track = new VisualTrack(&(*midifile)[tracksInfo[i].trackId], tracksInfo[i]);
-				this->tracks.push_back(track);
+				if(tracksInfo[i].bloom)
+					this->tracksWithBloom.push_back(track);
+				else
+					this->tracks.push_back(track);
 			}
 		}
 	}
@@ -57,19 +60,29 @@ Visualization::~Visualization()
 	tracks.clear();
 }
 int mark;
-void Visualization::Draw()
+void Visualization::Draw(unsigned int tracksType)
 {
 	if (startTime == 0)
 	{
 		std::cout << "Call function Start() before calling Draw!!\n";
 		return;
 	}
-
-	for (auto track : tracks)
+	if (tracksType == BLOOM_TRACKS || tracksType == ALL_TRACKS)
 	{
-		track->Update(TimeMark());
+		for (auto track : tracksWithBloom)
+		{
+			track->Update(TimeMark());
+		}
+	}
+	if (tracksType == NO_BLOOM_TRACKS || tracksType == ALL_TRACKS)
+	{
+		for (auto track : tracks)
+		{
+			track->Update(TimeMark());
+		}
 	}
 }
+
 void Visualization::Pause()
 {
 	pauseTime = clock();
